@@ -27,7 +27,7 @@ impl Controls {
 
     pub fn view(&mut self) -> Column<Message> {
         let Controls {
-            state,
+            state: _,
             play_pause,
             reset,
         } = self;

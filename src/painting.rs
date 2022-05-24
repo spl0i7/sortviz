@@ -12,8 +12,6 @@ const BAR_WIDTH: f32 = 15.0;
 
 const NUM_BARS: usize = ((WIDTH as f32 - PADDING as f32) / (BAR_WIDTH as f32)) as usize;
 
-const REFRESH_TIME: Duration = Duration::from_millis(10);
-
 
 pub struct Painting {
     canvas_cache: Cache,
@@ -26,19 +24,19 @@ impl Painting {
     fn generate_bars(sz: usize) -> Vec<i32> {
         let mut rng = thread_rng();
         let mut v = Vec::new();
-        for i in 0..sz {
+        for _ in 0..sz {
             v.push(rng.gen_range(10..700));
         }
         v
     }
 
     pub fn new() -> Self {
-        let mut bars = Painting::generate_bars(NUM_BARS);
+        let bars = Painting::generate_bars(NUM_BARS);
 
         Painting {
             canvas_cache: Cache::default(),
             bars: bars.clone(),
-            algorithm: Algorithm::new(Algorithm::Selection, bars),
+            algorithm: Algorithm::new(Algorithm::Bubble, bars),
             compared_index: (0, 0),
         }
     }
@@ -74,7 +72,7 @@ impl Painting {
 
 
 impl<Message> canvas::Program<Message> for Painting {
-    fn draw(&self, bounds: Rectangle, cursor: Cursor) -> Vec<Geometry> {
+    fn draw(&self, bounds: Rectangle, _cursor: Cursor) -> Vec<Geometry> {
         let canvas = self.canvas_cache.draw(bounds.size(), |frame| {
             let height = frame.height();
 
