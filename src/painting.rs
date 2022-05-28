@@ -6,7 +6,7 @@ use crate::algorithms::*;
 use crate::visualizer::*;
 
 // TODO: Figure out how to handle his responsively
-pub const WIDTH: u16 = 872;
+pub const WIDTH: u16 = 840;
 pub const HEIGHT: u16 = 768;
 pub const PADDING: u16 = 5;
 pub const BAR_WIDTH: f32 = 15.0;
@@ -65,7 +65,7 @@ impl Painting {
 
         Container::new(canvas)
             .max_height(HEIGHT as u32)
-            .width(FillPortion(6))
+            .width(FillPortion(15))
             .height(Units(HEIGHT))
             .padding(Padding::new(PADDING))
             .into()

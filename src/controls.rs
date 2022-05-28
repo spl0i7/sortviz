@@ -91,7 +91,7 @@ impl Controls {
             .spacing(20)
             .align_items(Alignment::Center)
             .push(pick_list)
-            .width(FillPortion(1))
+            .width(FillPortion(3))
             .push(
                 Row::new()
                     .width(Length::Shrink)
