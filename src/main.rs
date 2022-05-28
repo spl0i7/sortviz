@@ -1,6 +1,5 @@
 
 use iced::{Application, Settings};
-use crate::algorithms::{BubbleSort, StepSortingAlgorithm};
 use crate::visualizer::SortingVisualizer;
 
 mod visualizer;

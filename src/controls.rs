@@ -1,33 +1,45 @@
-use iced::{Alignment, button, Button, Column, Length, Row};
-use iced::button::State;
-use iced::Font::Default;
+use iced::*;
+use crate::algorithms::Algorithm;
 use crate::visualizer;
-use crate::visualizer::*;
+use crate::visualizer::{ControlMessage, Message};
 
 
 #[derive(Debug, Clone)]
 pub struct Controls {
     state: visualizer::State,
+    selected_algo: Algorithm,
+    pick_list: pick_list::State<Algorithm>,
     play_pause: button::State,
-    reset: button::State
+    reset: button::State,
 }
 
 impl Controls {
     pub fn new(state: visualizer::State) -> Self {
         Controls {
             state,
+            pick_list: pick_list::State::default(),
+            selected_algo: Algorithm::default(),
             play_pause: button::State::default(),
-            reset: button::State::default()
+            reset: button::State::default(),
         }
     }
 
-    pub fn update(&mut self, state: visualizer::State )  {
-        self.state = state;
+    pub fn update(&mut self, message: ControlMessage) {
+        match message {
+            ControlMessage::StateChanged(s) => {
+                self.state = s;
+            }
+            ControlMessage::AlgorithmChanged(a) => {
+                self.selected_algo = a;
+            }
+        }
     }
 
     pub fn view(&mut self) -> Column<Message> {
         let Controls {
             state: _,
+            pick_list: _,
+            selected_algo: _,
             play_pause,
             reset,
         } = self;
@@ -36,13 +48,13 @@ impl Controls {
 
             match self.state {
                 visualizer::State::Paused => {
-                    let label = iced::Text::new("Resume").size(16);
+                    let label = Text::new("Play").size(16);
                     let button =
                         Button::new(state, label);
                     button.on_press(Message::Resume).padding(8)
                 }
                 visualizer::State::Running => {
-                    let label = iced::Text::new("Pause").size(16);
+                    let label = Text::new("Pause").size(16);
                     let button =
                         Button::new(state, label);
                     button.on_press(Message::Pause).padding(8)
@@ -51,19 +63,26 @@ impl Controls {
 
         };
 
-        let filter_btn = |state, label, emit| {
-
-            let label = iced::Text::new(label).size(16);
+        let reset_btn = |state, label, emit| {
+            let label = Text::new(label).size(16);
             let button =
                 Button::new(state, label);
             button.on_press(emit).padding(8)
 
         };
 
+        let pick_list = PickList::new(
+            &mut self.pick_list,
+            &Algorithm::ALL[..],
+            Option::from(self.selected_algo),
+            visualizer::Message::Algorithm,
+        );
+
         Column::new()
             .padding(20)
             .spacing(20)
             .align_items(Alignment::Center)
+            .push(pick_list)
             .push(
                 Row::new()
                     .width(Length::Shrink)
@@ -71,7 +90,7 @@ impl Controls {
                     .push(play_pause_btn(
                         play_pause,
                     ))
-                    .push(filter_btn(
+                    .push(reset_btn(
                         reset,
                         "Reset",
                         Message::Reset,

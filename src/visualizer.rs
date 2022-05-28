@@ -1,7 +1,6 @@
 use std::time::Duration;
 use iced::*;
-use iced::canvas::*;
-use iced::window::Mode;
+use crate::algorithms::Algorithm;
 use crate::controls::*;
 use crate::painting::*;
 
@@ -26,6 +25,12 @@ pub enum Message {
     Reset,
     Pause,
     Resume,
+    Algorithm(Algorithm)
+}
+
+pub enum ControlMessage {
+    StateChanged(State),
+    AlgorithmChanged(Algorithm),
 }
 
 
@@ -34,9 +39,9 @@ impl Application for SortingVisualizer {
     type Message = Message;
     type Flags = ();
 
-    fn new(flags: Self::Flags) -> (Self, Command<Self::Message>) {
+    fn new(_flags: Self::Flags) -> (Self, Command<Self::Message>) {
         (SortingVisualizer {
-            painting: Painting::new(),
+            painting: Painting::new(Algorithm::default()),
             state: State::Running,
             controls: Controls::new(State::Running),
         }, Command::none()
@@ -57,20 +62,28 @@ impl Application for SortingVisualizer {
                 self.painting.request_redraw();
             }
             Message::Pause => {
-                self.state = State::Paused
+                self.state = State::Paused;
+                self.controls.update(ControlMessage::StateChanged(self.state));
             },
             Message::Resume =>  {
-                self.state = State::Running
+                self.state = State::Running;
+                self.controls.update(ControlMessage::StateChanged(self.state));
             },
             Message::Reset => {
                 self.state = State::Paused;
-                self.painting = Painting::new();
+                self.controls.update(ControlMessage::StateChanged(self.state));
+                self.painting = Painting::new(Algorithm::default());
+                self.painting.request_redraw();
+            },
+
+            Message::Algorithm(a) => {
+                self.state = State::Paused;
+                self.controls.update(ControlMessage::StateChanged(self.state));
+                self.controls.update(ControlMessage::AlgorithmChanged(a));
+                self.painting = Painting::new(a);
                 self.painting.request_redraw();
             }
         }
-
-        self.controls.update(self.state);
-
         Command::none()
     }
 

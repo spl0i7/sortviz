@@ -1,16 +1,15 @@
-use std::time::Duration;
 use iced::*;
 use iced::canvas::*;
 use rand::{Rng, thread_rng};
 use crate::algorithms::*;
 use crate::visualizer::*;
 
-const WIDTH: u16 = 1024;
-const HEIGHT: u16 = 768;
-const PADDING: u16 = 5;
-const BAR_WIDTH: f32 = 15.0;
+pub const WIDTH: u16 = 1024;
+pub const HEIGHT: u16 = 768;
+pub const PADDING: u16 = 5;
+pub const BAR_WIDTH: f32 = 15.0;
 
-const NUM_BARS: usize = ((WIDTH as f32 - PADDING as f32) / (BAR_WIDTH as f32)) as usize;
+pub const NUM_BARS: usize = ((WIDTH as f32 - PADDING as f32) / (BAR_WIDTH as f32)) as usize;
 
 
 pub struct Painting {
@@ -30,13 +29,13 @@ impl Painting {
         v
     }
 
-    pub fn new() -> Self {
+    pub fn new(algo: Algorithm) -> Self {
         let bars = Painting::generate_bars(NUM_BARS);
 
         Painting {
             canvas_cache: Cache::default(),
             bars: bars.clone(),
-            algorithm: Algorithm::new(Algorithm::Bubble, bars),
+            algorithm: Algorithm::new(algo, bars),
             compared_index: (0, 0),
         }
     }
