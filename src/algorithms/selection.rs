@@ -62,11 +62,11 @@ impl<T> Iterator for SelectionSort<T>
 
 #[test]
 fn test_selection_sort() {
-    // let mut v = vec![9, 8, 6, 5, 3, 1, 0];
-    //
-    // let bubble_sort = SelectionSort::new(v);
-    //
-    // let result: Vec<Vec<i32>> = bubble_sort.map(|x| x.items).collect();
-    //
-    // assert_eq!(*result.last().unwrap(), vec![0, 1, 3, 5, 6, 8, 9]);
+    let v = vec![9, 8, 6, 5, 3, 1, 0];
+
+    let steps = SelectionSort::new(v);
+
+    let result: Vec<Vec<i32>> = steps.map(|x| x.items).collect();
+
+    assert_eq!(*result.last().unwrap(), vec![0, 1, 3, 5, 6, 8, 9]);
 }
