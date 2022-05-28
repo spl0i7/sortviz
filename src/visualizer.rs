@@ -34,13 +34,11 @@ impl Application for SortingVisualizer {
     type Flags = ();
 
     fn new(_flags: Self::Flags) -> (Self, Command<Self::Message>) {
-
         (SortingVisualizer {
             painting: Painting::new(Algorithm::default()),
             controls: Controls::new(ControlState::Paused),
             state: State::Paused,
-        }, Command::none()
-        )
+        }, Command::none())
     }
 
     fn title(&self) -> String {

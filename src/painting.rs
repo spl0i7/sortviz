@@ -1,10 +1,12 @@
 use iced::*;
 use iced::canvas::*;
+use iced::Length::*;
 use rand::{Rng, thread_rng};
 use crate::algorithms::*;
 use crate::visualizer::*;
 
-pub const WIDTH: u16 = 1024;
+// TODO: Figure out how to handle his responsively
+pub const WIDTH: u16 = 872;
 pub const HEIGHT: u16 = 768;
 pub const PADDING: u16 = 5;
 pub const BAR_WIDTH: f32 = 15.0;
@@ -57,13 +59,14 @@ impl Painting {
     }
     pub fn view(&mut self) -> Container<Message> {
         let canvas = Canvas::new(self)
-            .width(Length::Units(WIDTH))
-            .height(Length::Units(HEIGHT));
+            .width(Units(WIDTH))
+            .height(Units(HEIGHT));
 
 
         Container::new(canvas)
-            .width(Length::Units(WIDTH))
-            .height(Length::Units(HEIGHT))
+            .max_height(HEIGHT as u32)
+            .width(FillPortion(6))
+            .height(Units(HEIGHT))
             .padding(Padding::new(PADDING))
             .into()
     }

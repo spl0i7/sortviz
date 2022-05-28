@@ -1,4 +1,5 @@
 use iced::*;
+use iced::Length::FillPortion;
 use crate::algorithms::Algorithm;
 use crate::visualizer;
 use crate::visualizer::{Message};
@@ -90,6 +91,7 @@ impl Controls {
             .spacing(20)
             .align_items(Alignment::Center)
             .push(pick_list)
+            .width(FillPortion(1))
             .push(
                 Row::new()
                     .width(Length::Shrink)
