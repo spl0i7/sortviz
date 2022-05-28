@@ -28,22 +28,17 @@ pub enum Message {
     Algorithm(Algorithm)
 }
 
-pub enum ControlMessage {
-    StateChanged(State),
-    AlgorithmChanged(Algorithm),
-}
-
-
 impl Application for SortingVisualizer {
     type Executor = executor::Default;
     type Message = Message;
     type Flags = ();
 
     fn new(_flags: Self::Flags) -> (Self, Command<Self::Message>) {
+
         (SortingVisualizer {
             painting: Painting::new(Algorithm::default()),
-            state: State::Running,
-            controls: Controls::new(State::Running),
+            controls: Controls::new(ControlState::Paused),
+            state: State::Paused,
         }, Command::none()
         )
     }
@@ -63,22 +58,21 @@ impl Application for SortingVisualizer {
             }
             Message::Pause => {
                 self.state = State::Paused;
-                self.controls.update(ControlMessage::StateChanged(self.state));
+                self.controls.update(ControlMessage::StateChanged(ControlState::Paused));
             },
             Message::Resume =>  {
                 self.state = State::Running;
-                self.controls.update(ControlMessage::StateChanged(self.state));
+                self.controls.update(ControlMessage::StateChanged(ControlState::Running));
             },
             Message::Reset => {
                 self.state = State::Paused;
-                self.controls.update(ControlMessage::StateChanged(self.state));
+                self.controls.update(ControlMessage::StateChanged(ControlState::Paused));
                 self.painting = Painting::new(Algorithm::default());
                 self.painting.request_redraw();
             },
-
             Message::Algorithm(a) => {
                 self.state = State::Paused;
-                self.controls.update(ControlMessage::StateChanged(self.state));
+                self.controls.update(ControlMessage::StateChanged(ControlState::Paused));
                 self.controls.update(ControlMessage::AlgorithmChanged(a));
                 self.painting = Painting::new(a);
                 self.painting.request_redraw();

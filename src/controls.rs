@@ -1,12 +1,22 @@
 use iced::*;
 use crate::algorithms::Algorithm;
 use crate::visualizer;
-use crate::visualizer::{ControlMessage, Message};
+use crate::visualizer::{Message};
 
+#[derive(Debug, Clone)]
+pub enum ControlState {
+    Paused,
+    Running,
+}
+
+pub enum ControlMessage {
+    StateChanged(ControlState),
+    AlgorithmChanged(Algorithm),
+}
 
 #[derive(Debug, Clone)]
 pub struct Controls {
-    state: visualizer::State,
+    state: ControlState,
     selected_algo: Algorithm,
     pick_list: pick_list::State<Algorithm>,
     play_pause: button::State,
@@ -14,7 +24,7 @@ pub struct Controls {
 }
 
 impl Controls {
-    pub fn new(state: visualizer::State) -> Self {
+    pub fn new(state: ControlState) -> Self {
         Controls {
             state,
             pick_list: pick_list::State::default(),
@@ -45,22 +55,20 @@ impl Controls {
         } = self;
 
         let play_pause_btn = |state| {
-
             match self.state {
-                visualizer::State::Paused => {
+                ControlState::Paused => {
                     let label = Text::new("Play").size(16);
                     let button =
                         Button::new(state, label);
                     button.on_press(Message::Resume).padding(8)
                 }
-                visualizer::State::Running => {
+                ControlState::Running => {
                     let label = Text::new("Pause").size(16);
                     let button =
                         Button::new(state, label);
                     button.on_press(Message::Pause).padding(8)
                 }
             }
-
         };
 
         let reset_btn = |state, label, emit| {
@@ -68,7 +76,6 @@ impl Controls {
             let button =
                 Button::new(state, label);
             button.on_press(emit).padding(8)
-
         };
 
         let pick_list = PickList::new(
