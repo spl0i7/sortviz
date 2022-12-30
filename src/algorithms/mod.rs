@@ -4,10 +4,12 @@ use std::fmt::{Debug, Formatter};
 mod bubble;
 mod selection;
 mod exchange;
+mod gnome;
 
 pub use bubble::*;
 pub use selection::*;
 pub use exchange::*;
+use crate::algorithms::gnome::GnomeSort;
 
 #[derive(Debug)]
 pub struct StepResult<T> {
@@ -24,7 +26,8 @@ pub type IntegerSortingAlgorithm = Box<dyn StepSortingAlgorithm<i32, Item=StepRe
 pub enum Algorithm {
     Bubble,
     Selection,
-    Exchange
+    Exchange,
+    Gnome
 }
 
 impl Algorithm {
@@ -38,6 +41,9 @@ impl Algorithm {
             }
             Algorithm::Exchange => {
                 Box::new(ExchangeSort::new(elements))
+            }
+            Algorithm::Gnome => {
+                Box::new(GnomeSort::new(elements))
             }
         }
     }
@@ -63,7 +69,8 @@ impl fmt::Display for Algorithm {
             match self {
                 Algorithm::Bubble => "bubble",
                 Algorithm::Selection => "selection",
-                Algorithm::Exchange => "exchange"
+                Algorithm::Exchange => "exchange",
+                Algorithm::Gnome => "gnome"
             }
         )
     }
