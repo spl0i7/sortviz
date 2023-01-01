@@ -12,15 +12,16 @@ pub use exchange::*;
 use crate::algorithms::gnome::GnomeSort;
 
 #[derive(Debug)]
-pub struct StepResult<T> {
-    pub items: Vec<T>,
+pub struct StepResult {
     pub compared: (Option<usize>, Option<usize>),
 }
 
 
-pub trait StepSortingAlgorithm<T> where Self: Iterator<Item=StepResult<T>> {}
+pub trait StepSortingAlgorithm<T> {
+    fn sort_step(&mut self, items: &mut[T]) -> Option<StepResult>;
+}
 
-pub type IntegerSortingAlgorithm = Box<dyn StepSortingAlgorithm<i32, Item=StepResult<i32>>>;
+pub type IntegerSortingAlgorithm = Box<dyn StepSortingAlgorithm<i32>>;
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub enum Algorithm {
@@ -31,33 +32,34 @@ pub enum Algorithm {
 }
 
 impl Algorithm {
-    pub fn new(algo: Algorithm, elements: Vec<i32>) -> IntegerSortingAlgorithm {
+    pub fn new(algo: Algorithm) -> IntegerSortingAlgorithm {
         match algo {
             Algorithm::Bubble => {
-                Box::new(BubbleSort::new(elements))
+                Box::new(BubbleSort::new())
             }
             Algorithm::Selection => {
-               Box::new(SelectionSort::new(elements))
+               Box::new(SelectionSort::new())
             }
             Algorithm::Exchange => {
-                Box::new(ExchangeSort::new(elements))
+                Box::new(ExchangeSort::new())
             }
             Algorithm::Gnome => {
-                Box::new(GnomeSort::new(elements))
+                Box::new(GnomeSort::new())
             }
         }
     }
 
-    pub const ALL: [Algorithm; 3] = [
+    pub const ALL: [Algorithm; 4] = [
         Algorithm::Bubble,
         Algorithm::Selection,
-        Algorithm::Exchange
+        Algorithm::Exchange,
+        Algorithm::Gnome,
     ];
 }
 
 impl Default for Algorithm {
     fn default() -> Self {
-        Algorithm::Bubble
+        Algorithm::Gnome
     }
 }
 

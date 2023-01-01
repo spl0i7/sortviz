@@ -4,7 +4,7 @@ use crate::algorithms::Algorithm;
 use crate::controls::*;
 use crate::painting::*;
 
-const REFRESH_TIME: Duration = Duration::from_millis(10);
+const REFRESH_TIME: Duration = Duration::from_millis(50);
 
 #[derive(PartialEq, Debug, Clone, Copy)]
 pub enum State {

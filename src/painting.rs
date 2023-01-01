@@ -32,12 +32,10 @@ impl Painting {
     }
 
     pub fn new(algo: Algorithm) -> Self {
-        let bars = Painting::generate_bars(NUM_BARS);
-
         Painting {
             canvas_cache: Cache::default(),
-            bars: bars.clone(),
-            algorithm: Algorithm::new(algo, bars),
+            bars: Painting::generate_bars(NUM_BARS),
+            algorithm: Algorithm::new(algo),
             compared_index: (0, 0),
         }
     }
@@ -48,10 +46,9 @@ impl Painting {
     }
 
     pub fn sort_step(&mut self) {
-        match self.algorithm.next() {
+        match self.algorithm.sort_step(&mut self.bars) {
             None => {}
             Some(e) => {
-                self.bars = e.items;
                 self.compared_index = (e.compared.0.unwrap_or(0), e.compared.1.unwrap_or(0))
             }
         }
@@ -73,7 +70,7 @@ impl Painting {
 }
 
 
-impl<Message> canvas::Program<Message> for Painting {
+impl<Message> Program<Message> for Painting {
     fn draw(&self, bounds: Rectangle, _cursor: Cursor) -> Vec<Geometry> {
         let canvas = self.canvas_cache.draw(bounds.size(), |frame| {
             let height = frame.height();
